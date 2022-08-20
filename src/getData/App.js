@@ -7,17 +7,21 @@ import {Link} from "react-router-dom";
 function BoardList(){
 
     const [inputData, setInputData] = useState([{
-        number: '',
-        phone: ''
+        num: '',
+        id: '',
+        pw: '',
+        role: ''
     }])
 
     useEffect(async() => {
         try{
             // 데이터를 받아오는 동안 시간이 소요되므로 await 필요
-            const res = await axios.get("http://localhost:8080/UserList/getUsersLimit?page=0&per=10")
+            const res = await axios.get("http://localhost:8080/test")
             const _inputData =  res.data.map((rowData) => ({
-                number: rowData.number,
-                phone: rowData.phone,
+                num: rowData.num,
+                id: rowData.id,
+                pw: rowData.pw,
+                role: rowData.role
                 })
             )
             // 선언된 _inputData 를 최초 선언한 inputData 에 concat 으로 추가
@@ -41,16 +45,21 @@ function BoardList(){
 
                     {inputData !== 0 ?
                         inputData.map(rowData => (
-                            rowData.number !== '' &&
+                            rowData.num !== '' &&
                             <tr>
                                 <td className='listTableIndex'>
                                     {/*<Link to={`/BoardContent/${rowData.number}`}>{rowData.number}</Link>*/}
-                                    {rowData.number}
+                                    {rowData.num}
                                 </td>
                                 <td className='listTableTitle'>
-                                    {rowData.phone}
+                                    {rowData.id}
                                 </td>
-
+                                <td className='listTableTitle'>
+                                    {rowData.pw}
+                                </td>
+                                <td className='listTableTitle'>
+                                    {rowData.role}
+                                </td>
                             </tr>
                         )) :
                         <tr>
