@@ -1,79 +1,45 @@
 
-import React, { useEffect, useState, Component} from "react";
-
+import React, {useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
 
-function BoardList(){
+function Login(){
 
-    const [inputData, setInputData] = useState([{
-        num: '',
-        id: '',
-        pw: '',
-        role: ''
-    }])
+    const [userID, setUserID] = useState('');
+    const [Password, setPassword] = useState('');
 
-    useEffect(async() => {
-        try{
-            // 데이터를 받아오는 동안 시간이 소요되므로 await 필요
-            const res = await axios.get("http://localhost:8080/test")
-            const _inputData =  res.data.map((rowData) => ({
-                num: rowData.num,
-                id: rowData.id,
-                pw: rowData.pw,
-                role: rowData.role
-                })
-            )
-            // 선언된 _inputData 를 최초 선언한 inputData 에 concat 으로 추가
-            setInputData(inputData.concat(_inputData))
-        } catch(e){
-            console.error(e.message)
-        }
-    },[])
+    const onSubmit= (event) => {
+        event.preventDefault(); // submit 시 웹페이지가 리로딩 되는걸 막아줌
+        console.log(userID, Password);
 
-    console.log('App :: inputData :: ', inputData)
+        const user = {
+            id : userID,
+            pw : Password,
+        };
+
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/',
+            params: user
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+
 
     return(
         <div>
-            <div>
-                <table className='listTable'>
-                    <tbody>
-                    <tr>
-                        <td className='listTableIndex th'>number</td>
-                        <td className='listTableTitle th'>phone</td>
-                    </tr>
-
-                    {inputData !== 0 ?
-                        inputData.map(rowData => (
-                            rowData.num !== '' &&
-                            <tr>
-                                <td className='listTableIndex'>
-                                    {/*<Link to={`/BoardContent/${rowData.number}`}>{rowData.number}</Link>*/}
-                                    {rowData.num}
-                                </td>
-                                <td className='listTableTitle'>
-                                    {rowData.id}
-                                </td>
-                                <td className='listTableTitle'>
-                                    {rowData.pw}
-                                </td>
-                                <td className='listTableTitle'>
-                                    {rowData.role}
-                                </td>
-                            </tr>
-                        )) :
-                        <tr>
-                            <td className='listTableIndex'></td>
-                            <td className='listTableTitle noData'>작성된 글이 없습니다.</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
+            <form onSubmit={onSubmit}>
+                <input onChange={(e) => {setUserID(e.target.value)}} placeholder="userID" /><br/>
+                <input onChange={(e) => {setPassword(e.target.value)}} placeholder="password" /><br/>
+                <button type="submit">로그인</button>
+            </form>
         </div>
     );
 }
 
-
-
-export default BoardList;
+export default Login;
